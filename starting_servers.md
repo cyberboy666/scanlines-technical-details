@@ -5,10 +5,14 @@
 just a quick note on what i did (will write all this nicer another day)
 
 - checking the dashboards on digital ocean and seeing memory drop
+
+![image](https://user-images.githubusercontent.com/12017938/80652398-16b6aa80-8a78-11ea-89a6-3527a096c327.png)
+(this was taken later in the day)
+
 - ssh into the machine
 - first i just tried a reboot: `reboot` in the console
 - this didnt seems to work (actually it did but the app crashed again for some reason)
-- next i tried to find how to start and see what was running on the machine
+- next i tried resizing the droplet and also looking how to start and see what was running on the machine
 - run the command `netstat -tulpn` to see what was running:
 
 ![image](https://user-images.githubusercontent.com/12017938/80651025-647de380-8a75-11ea-870d-2aa3152aa682.png)

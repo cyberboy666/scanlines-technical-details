@@ -48,7 +48,22 @@ this is the config file we started with - i highlighted the parts i changed from
 
 in this file we can see two configurations - first is for the _rtmp_ , listening on __port 1935__ and buffering the hls stream. the second is a _http_ route on __port 8080__ which is used to serve the stream file. there are more configurations we can try out here but for now this we enough to get something going
 
-- test the configuration `/usr/local/nginx/sbin/nginx -t` and then start nginx `/usr/local/nginx/sbin/nginx`
+also need to create the folders where the stream files will go:
+```
+mkdir /nginx
+mkdir /nginx/live
+chown -R www-data:www-data /nginx
+```
+
+finally test the configuration `/usr/local/nginx/sbin/nginx -t` and then start nginx `/usr/local/nginx/sbin/nginx`
+
+## add to firewall
+
+we are using _ufw_ on this droplet. to allow streaming to it we need to allow the rtmp port here:
+
+```
+ufw allow 1935
+```
 
 ## open broadcaster software
 
@@ -64,10 +79,40 @@ the streaming key is the name of the file that will be served on the front-end (
 
 ![image](https://user-images.githubusercontent.com/12017938/82035801-55677a00-96a0-11ea-8a83-75738bc54d2e.png)
 
+now i can press _start streaming_ in obs and if all is correct it should start streaming! from inside the droplet can check what is in the folders we just created: `ls /nginx/live` -> you should see some _.ts_ fragments and a _test.m3u8_ file (this file is the name of your streaming key)
 
-for now just a dump so i can close some tabs:
+to try and play this stream i opened up vlc player, and went to _open network_
 
-- 
-- 
-- https://github.com/lebinh/ngxtop
-- sudo ufw allow 1935
+![image](https://user-images.githubusercontent.com/12017938/82040310-b7c37900-96a6-11ea-8c64-42b8c7a3cae4.png)
+
+this is where we use the http config on port 8080 in the nginx file above
+
+![image](https://user-images.githubusercontent.com/12017938/82040645-328c9400-96a7-11ea-9812-b8c1e98c425f.png)
+
+and there it is ! (the framerate for this test was very low but i think this was a problem on the obs side since it was saying _dropped frames: 85%_ or something -> need to configure this a bit i think, having never done a stream before)
+
+## https and routing
+
+this is the basics already set up ! however if we want to embed the stream on a https site we need to serve this streaming file also over https. if you are setting this streaming service up on a fresh machine then i would recommend following the video i linked above -> this shows setting a_records for a custom domain and installing _lets_encrypt_ to generate ssl certs and linking them in the nginx config.
+
+for us however we already have a domain (_chat.scanlines.xyz_ ) pointing to this droplets ip and have ssl certs installed to serve over https. this is all being handled by _traefik_ listening on __port 43__. already when setting up the [auth-bridge](https://github.com/langolierz/auth-rocketchat-from-discourse) i had added a path_prefix rule to send all requests on the extension `/auth` to my flask-app on __port 5000__. for this i just added another path_prefix rule to send all requests on the `/live` extension to __port 8080__ which our nginx is listening on. (maybe it would be nice to route directly to the stream in _traefik_ and bypass the nginx http server, but this way we can explore some other intergrations for the nginx rtmp-module)
+
+- to edit traefik route: `sudo nano /etc//traefik/traefik.toml`
+
+![image](https://user-images.githubusercontent.com/12017938/82042006-6f598a80-96a9-11ea-80ff-240bc92c2f61.png)
+
+## nginx monitoring
+
+at this point i could see that _traefik_ was passing the request to _nginx_ but my attempt to access the stream over https at `https://chat.scanlines.xyz/live/hls/test.m3u8` would serve a (nginx) not found. the reason was because i originally had the stream file in the dir `/nginx/hls/test.m3u8` (as in the video i was following). this worked when accessing the nginx port directly (`<server0ip>:8080/hls/test.m3u8`) however it didnt work when passing the path extension from _traefik_ -> i didnt realise that the whole path was being passed through so _nginx_ was now looking for the file at `/live/hls/test.m3u8`. i fixed this by just renaming the folder that the stream saves to -> now it is in `/nginx/live/` and we dont need hls in the path at all.
+
+however in order to figure this out i needed to find the nginx _access_logs_. these can be found in `/var/log/nginx/nginx-access.log`. a nice tool i found to view them is [ngxtop](https://github.com/lebinh/ngxtop) , which can be installed with `apt install python-pip; pip install ngxtop`, then started with `ngxtop -l /var/log/nginx/nginx-access.log`
+
+![image](https://user-images.githubusercontent.com/12017938/82043399-d0825d80-96ab-11ea-8715-e13f0e43b41d.png)
+
+from here i could easily see the problem with the path mismatch
+
+## displaying the stream on our site
+
+- videojs as player ?
+- "custom theme component as a github repo and include the video.js source there, then "install from repo""
+- wip

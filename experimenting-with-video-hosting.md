@@ -98,7 +98,7 @@ sudo ln -s /etc/nginx/sites-available/peertube /etc/nginx/sites-enabled/peertube
 nano /etc/nginx/sites-available/peertube
 ```
 
-![image](https://user-images.githubusercontent.com/12017938/83358367-43a9f600-a373-11ea-980f-9c38b5d847ee.png)
+![image](https://user-images.githubusercontent.com/12017938/83362027-5c73d500-a38e-11ea-8664-a6b1e174800a.png)
 
 it is worth taking a look inside the nginx config file also - just to have some idea what is happening. you should now comment out the _ssl_certificate_ and _ssl_certificate_key_ lines in here. you will notice there are a few places where the domain is `peertube.example.com` , this needs to be updated to the _hostname_ you set eariler. to save doing this manually you can run this command (where `$DOMAIN_NAME` is replaced with your domain):
 

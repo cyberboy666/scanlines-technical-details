@@ -253,7 +253,3 @@ using hls is meant to make playback smoother, and loading faster , but when tryi
 ![image](https://user-images.githubusercontent.com/12017938/83361895-31d54c80-a38d-11ea-8e35-ccdea631790d.png)
 
 also on my laptop now the hls videos wont load/play at all in chrome or safari (although on my ios phone they do). guess will stick with that option off for now.
-
-# next steps:
-
-look into the [plugins](https://docs.joinpeertube.org/#/contribute-plugins?id=test-your-plugintheme) and install locally with [docker](https://docs.joinpeertube.org/#/install-docker), in particular for now a custom auth flow for discource.

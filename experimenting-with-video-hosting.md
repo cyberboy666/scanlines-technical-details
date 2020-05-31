@@ -153,3 +153,90 @@ if all went well you should be able toe reach _peertube_ through your chosen dom
 
 # setting up external static object storage
 
+first i created an account on wasabi. from here you can create and download your _accesskey_ and _secret_.
+
+next on the droplet i installed s3fs from source because was having some problems with the version i tried from the package mananger. maybe first you could try it with `sudo apt install s3fs` and to check the version. otherwise from source (for V1.86 commit:0cb057d):
+
+```
+cd /usr/src/
+sudo apt-get install build-essential git libfuse-dev libcurl4-openssl-dev libxml2-dev mime-support automake libtool
+sudo apt-get install pkg-config libssl-dev
+git clone https://github.com/s3fs-fuse/s3fs-fuse
+cd s3fs-fuse/
+./autogen.sh
+./configure --prefix=/usr --with-openssl
+make
+sudo make install
+```
+
+then i created a file for my key and secret:
+
+- `nano /etc/passwd-s3fs`
+- in this file put your key and secret seperated by a colon: `<accesskey>:<secret>`
+- update permissions: `chmod 600 /etc/passwd-s3fs`
+
+_NOTE: this next part differs from the [instructions from peertube](https://docs.joinpeertube.org/#/admin-remote-storage). i tried it this way but couldnt get it to work. mounting the s3 drive seemed to overwrite the link between folders and viceversa. so any way i tried it just didnt work. maybe someone will show me how it is meant to be done_
+
+![image](https://user-images.githubusercontent.com/12017938/83361000-b623d180-a385-11ea-87ec-8026cd74e5a3.png)
+
+my workaround: 
+
+- create a bucket for each of the folders we want to store on _wasabi_: __videos__ , __redundancy__ , __streaming-playlists__
+- make these buckets public in the settings (i needed to request public bucket feature from support on a trial account)
+- make a policy for each bucket that makes every item in it public also:
+
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowPublicRead",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::scanlines-videos/*"
+    }
+  ]
+}
+```
+
+now back in the droplet, mount the buckets (take care of the bucket name and the _region_ in the url is same as your buckets):
+```
+s3fs scanlines-videos /var/www/peertube/storage/videos -o passwd_file=/etc/passwd-s3fs -o url=https://s3.eu-central-1.wasabisys.com -o allow_other -o use_path_request_style -o uid=1000 -o gid=1000
+
+s3fs scanlines-redundancy /var/www/peertube/storage/__redundancy__ -o passwd_file=/etc/passwd-s3fs -o url=https://s3.eu-central-1.wasabisys.com -o allow_other -o use_path_request_style -o uid=1000 -o gid=1000
+
+s3fs scanlines-streaming-playlists /var/www/peertube/storage/streaming-playlists -o passwd_file=/etc/passwd-s3fs -o url=https://s3.eu-central-1.wasabisys.com -o allow_other -o use_path_request_style -o uid=1000 -o gid=1000
+```
+
+you can test the mount with the command `mount` - at the bottom the _s3fs_ can be seen. you can also test it by creating a file in one of these folders and seeing it in the wasabi console.
+
+![image](https://user-images.githubusercontent.com/12017938/83361131-a5279000-a386-11ea-89c2-244a065065a7.png)
+
+finally you can try uploading a video in the peertube app. you should see the file both in the `/var/www/peertube/storage/videos` folder on the droplet and in the wasabi manager.
+
+![image](https://user-images.githubusercontent.com/12017938/83361206-4b739580-a387-11ea-8916-fbccf1e1f082.png)
+
+the video should play in peertube, but there is one more step - updating the _nginx_ conf to serve the video directly from the bucket (rather than through the mount point):
+
+open the config ( `nano /etc/nginx/sites-available/peertube` ) and near the bottom , above the existing static rewrite and below the `root /var/www/peertube/storage;` setting add these lines:
+
+```
+set $cdn https://s3.eu-central-1.wasabisys.com;
+rewrite ^/static/webseed/(.*)$ $cdn/scanlines-videos/$1 redirect;
+rewrite ^/static/redundancy/(.*)$ $cdn/scanlines-redundancy/$1 redirect;
+rewrite ^/static/streaming-playlists/(.*)$ $cdn/scanlines-streaming-playlists/$1 redirect;
+```
+
+(take care that the bucket names and region match what is in wasabi)
+
+![image](https://user-images.githubusercontent.com/12017938/83361301-1582e100-a388-11ea-8f83-9bbb36f15431.png)
+
+- (check nginx `nginx -t` and) restart: `sudo systemctl restart nginx`
+
+now double check that the video still plays in peertube. 
+
+![image](https://user-images.githubusercontent.com/12017938/83361366-c4272180-a388-11ea-980c-40298abc62fb.png)
+

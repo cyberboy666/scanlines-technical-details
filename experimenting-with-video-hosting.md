@@ -240,3 +240,20 @@ now double check that the video still plays in peertube.
 
 ![image](https://user-images.githubusercontent.com/12017938/83361366-c4272180-a388-11ea-980c-40298abc62fb.png)
 
+# final thoughts (for now)
+
+it is quite suprising that a 1CPU droplet can run this so well. however (as mentioned [here](https://github.com/Chocobozzz/PeerTube/blob/develop/FAQ.md#should-i-have-a-big-server-to-run-peertube) ) if you are doing transcoding then you should have atleast 2CPU. i can see each time i upload a video the cpu is at 100% for a few minutes while it transcodes. this is for videos 1-2minutes long. if an hour video was uploaded on this droplet it would probably take down the whole site !
+
+![image](https://user-images.githubusercontent.com/12017938/83361508-ee2d1380-a389-11ea-9553-9c709d5bec60.png)
+
+# hls problems
+
+using hls is meant to make playback smoother, and loading faster , but when trying this there were a few problems. there is no quality options:
+
+![image](https://user-images.githubusercontent.com/12017938/83361895-31d54c80-a38d-11ea-8e35-ccdea631790d.png)
+
+also on my laptop now the hls videos wont load/play at all in chrome or safari (although on my ios phone they do). guess will stick with that option off for now.
+
+# next steps:
+
+look into the [plugins](https://docs.joinpeertube.org/#/contribute-plugins?id=test-your-plugintheme) and install locally with [docker](https://docs.joinpeertube.org/#/install-docker), in particular for now a custom auth flow for discource.

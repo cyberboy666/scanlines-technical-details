@@ -206,7 +206,7 @@ now back in the droplet, mount the buckets (take care of the bucket name and the
 ```
 s3fs scanlines-videos /var/www/peertube/storage/videos -o passwd_file=/etc/passwd-s3fs -o url=https://s3.eu-central-1.wasabisys.com -o allow_other -o use_path_request_style -o uid=1000 -o gid=1000
 
-s3fs scanlines-redundancy /var/www/peertube/storage/__redundancy__ -o passwd_file=/etc/passwd-s3fs -o url=https://s3.eu-central-1.wasabisys.com -o allow_other -o use_path_request_style -o uid=1000 -o gid=1000
+s3fs scanlines-redundancy /var/www/peertube/storage/redundancy -o passwd_file=/etc/passwd-s3fs -o url=https://s3.eu-central-1.wasabisys.com -o allow_other -o use_path_request_style -o uid=1000 -o gid=1000
 
 s3fs scanlines-streaming-playlists /var/www/peertube/storage/streaming-playlists -o passwd_file=/etc/passwd-s3fs -o url=https://s3.eu-central-1.wasabisys.com -o allow_other -o use_path_request_style -o uid=1000 -o gid=1000
 ```

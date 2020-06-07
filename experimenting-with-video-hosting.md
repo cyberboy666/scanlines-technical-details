@@ -248,8 +248,10 @@ it is quite suprising that a 1CPU droplet can run this so well. however (as ment
 
 # hls problems
 
-using hls is meant to make playback smoother, and loading faster , but when trying this there were a few problems. there is no quality options:
+using hls is meant to make playback smoother, and loading faster , ~~but when trying this there were a few problems. there is no quality options:~~
 
-![image](https://user-images.githubusercontent.com/12017938/83361895-31d54c80-a38d-11ea-8e35-ccdea631790d.png)
+this problem seems to be resolved when updating the version. hls videos seems to work fine for me now.
 
-also on my laptop now the hls videos wont load/play at all in chrome or safari (although on my ios phone they do). guess will stick with that option off for now.
+# single sign-on:
+
+its not super important, but would be nice to be able to use discourse as an idenity provider for this to intergrate more seamlessly with the scanlines forum. there are examples of plugins that handle custom auth. i started working on one for discourse. will update here with info

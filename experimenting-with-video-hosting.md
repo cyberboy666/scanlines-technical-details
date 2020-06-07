@@ -246,6 +246,8 @@ it is quite suprising that a 1CPU droplet can run this so well. however (as ment
 
 ![image](https://user-images.githubusercontent.com/12017938/83361508-ee2d1380-a389-11ea-9553-9c709d5bec60.png)
 
+another factor that i had forgotten about until now is the transfer limit. depending on the droplet size you get around 1-2 terebytes of transfer per month (although this is pooled between all droplets so would be more if running other things aswell) - it is hard to tell if this would make a problem. depends how much the videos are watched. i suspect that once this limit is reached there would be enough users to justify upgrading anyway. just something to keep an eye on
+
 # hls problems
 
 using hls is meant to make playback smoother, and loading faster , ~~but when trying this there were a few problems. there is no quality options:~~

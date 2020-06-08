@@ -248,6 +248,12 @@ it is quite suprising that a 1CPU droplet can run this so well. however (as ment
 
 another factor that i had forgotten about until now is the transfer limit. depending on the droplet size you get around 1-2 terebytes of transfer per month (although this is pooled between all droplets so would be more if running other things aswell) - it is hard to tell if this would make a problem. depends how much the videos are watched. i suspect that once this limit is reached there would be enough users to justify upgrading anyway. just something to keep an eye on
 
+## transcoding example
+
+i uploaded a 1hour long 500mb 720 video as a test. it worked well. transcoding took about 90minutes with the cpu on 100%. using a single small droplet at first still seems to work pretty well (cpu is not really needed much to serve videos anyway), when more people are using it makes sense to upgrade to 2cpus atleast
+
+![image](https://user-images.githubusercontent.com/12017938/84027038-a2ccc380-a98e-11ea-8ba6-994db413f038.png)
+
 # hls problems
 
 using hls is meant to make playback smoother, and loading faster , ~~but when trying this there were a few problems. there is no quality options:~~

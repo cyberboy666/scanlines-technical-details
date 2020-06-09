@@ -263,3 +263,14 @@ this problem seems to be resolved when updating the version. hls videos seems to
 # single sign-on:
 
 its not super important, but would be nice to be able to use discourse as an idenity provider for this to intergrate more seamlessly with the scanlines forum. there are examples of plugins that handle custom auth. i started working on one for discourse. will update here with info
+
+# reusing a username
+
+due to security around impersonating users, it is not possible to create an account with same name as one that has existed and then been removed. this makes sense but for testing my auth plugin i want to do this anyway. here is how:
+
+- ssh into the droplet
+- entered postgres `sudo -u postgres psql`
+- connected to db: `\l` to list dbs, `\c peertube_prod` to connect
+- `\d` to see tables , `\d actor` to see colums for the actor table
+- `SELECT "preferredUsername" FROM actor;` to see all the actor names
+- `DELETE FROM actor WHERE "preferredUsername" = 'cyberboy666';` to delete user with name cyberboy666

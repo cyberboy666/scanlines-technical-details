@@ -116,3 +116,7 @@ from here i could easily see the problem with the path mismatch
 - videojs as player ?
 - "custom theme component as a github repo and include the video.js source there, then "install from repo""
 - wip
+
+## test with people watching the stream
+
+![image](https://user-images.githubusercontent.com/12017938/84252596-17c70700-ab0f-11ea-8a75-c592fbd5d10e.png)

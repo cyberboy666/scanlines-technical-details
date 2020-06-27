@@ -40,7 +40,7 @@ yarn --version
 
 - next ffmpeg, database and other dependancies:
 ```
-sudo apt install -y ffmpeg nginx-full certbot python3-certbot-nginx postgresql postgresql-contrib redis-server
+sudo apt install -y ffmpeg nginx-full certbot python3-certbot-nginx postgresql postgresql-contrib redis-server g++ unzip
 ffmpeg -version # Should be >= 3.x
 g++ -v # Should be >= 5.x
 ```
@@ -155,7 +155,11 @@ if all went well you should be able toe reach _peertube_ through your chosen dom
 
 first i created an account on wasabi. from here you can create and download your _accesskey_ and _secret_.
 
-next on the droplet i installed s3fs from source because was having some problems with the version i tried from the package mananger. maybe first you could try it with `sudo apt install s3fs` and to check the version. otherwise from source (for V1.86 commit:0cb057d):
+## install s3fs
+
+`sudo apt install s3fs` this should work
+
+### if this version doesnt work install from source:
 
 ```
 cd /usr/src/
@@ -258,11 +262,11 @@ i uploaded a 1hour long 500mb 720 video as a test. it worked well. transcoding t
 
 using hls is meant to make playback smoother, and loading faster , ~~but when trying this there were a few problems. there is no quality options:~~
 
-this problem seems to be resolved when updating the version. hls videos seems to work fine for me now.
+~~this problem seems to be resolved when updating the version. hls videos seems to work fine for me now.~~ still problems with hls on desktop
 
 # single sign-on:
 
-its not super important, but would be nice to be able to use discourse as an idenity provider for this to intergrate more seamlessly with the scanlines forum. there are examples of plugins that handle custom auth. i started working on one for discourse. will update here with info
+its not super important, but would be nice to be able to use discourse as an idenity provider for this to intergrate more seamlessly with the scanlines forum. there are examples of plugins that handle custom auth. i started working on one for discourse: https://github.com/langolierz/peertube-plugin-auth-discourse
 
 # reusing a username
 

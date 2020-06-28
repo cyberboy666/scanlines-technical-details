@@ -28,3 +28,17 @@ just a quick note on what i did (will write all this nicer another day)
 and then check the active services again to see the node process on port 3000:
 
 ![image](https://user-images.githubusercontent.com/12017938/80651693-abb8a400-8a76-11ea-8f9c-a679e6953fb7.png)
+
+## fixing streaming server
+
+for some reason the streaming server wasnt running when we tried to stream last night. this is the steps i did to start it:
+
+- ssh into the droplet (same one running rocketchat)
+- run `netstat -tulpn` and see if nginx is running 
+
+![image](https://user-images.githubusercontent.com/12017938/85943563-1aa86100-b931-11ea-8b71-3b64d45dfd2c.png)
+
+- i could see it that wasnt , so ran `/usr/local/nginx/sbin/nginx` to start nginx
+- again tried running `netstat -tulpn` , can see now nginx is now running:
+
+![image](https://user-images.githubusercontent.com/12017938/85943616-7377f980-b931-11ea-9449-991f1e0eae22.png)

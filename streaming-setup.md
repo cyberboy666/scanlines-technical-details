@@ -113,9 +113,32 @@ from here i could easily see the problem with the path mismatch
 
 ## displaying the stream on our site
 
-- videojs as player ?
-- "custom theme component as a github repo and include the video.js source there, then "install from repo""
-- wip
+### using videojs
+
+to serve the stream content over https we use [videojs](https://videojs.com/), it looks something like this:
+
+```
+  <video
+    autoplay
+    id="my-video"
+    class="video-js"
+    controls
+    preload="auto"
+    loadingSpinner="false"
+    poster="https://vidicon.org/web/image/res.company/1/logo?unique=9e7c7a5"
+    data-setup="{}"
+  >
+    <source src="https://chat.scanlines.xyz/live/stream.m3u8" type="application/x-mpegURL" />
+    <p class="vjs-no-js">
+      To view this video please enable JavaScript, and consider upgrading to a
+      web browser that supports HTML5 video
+    </p>
+  </video>
+```
+
+i made a scanlines-stream page: https://stream.scanlines.xyz/ using github-pages which embeds a player from our stream. the source is [here](https://github.com/langolierz/scanlines-stream-page/blob/master/index.html) 
+
+for the streamlines performances however we use a custom discourse plugin to serve the stream directly on the forum. this just adds some html/css similar to above.
 
 ## test with people watching the stream
 

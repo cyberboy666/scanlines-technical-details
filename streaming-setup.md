@@ -143,3 +143,53 @@ for the streamlines performances however we use a custom discourse plugin to ser
 ## test with people watching the stream
 
 ![image](https://user-images.githubusercontent.com/12017938/84252596-17c70700-ab0f-11ea-8a75-c592fbd5d10e.png)
+
+## adding a currently viewing counter
+
+for vidicon (and otherwise) we though it would be nice to know how many people were watching the stream. an option for this is [mentioned](https://github.com/sergey-dryabzhinsky/nginx-rtmp-module/wiki/Getting-number-of-subscribers) in the wiki for the rtmp module. here are the steps to getting it working:
+
+- ssh into the droplet and go into nginx folder `cd /home/tim/nginx-1.18.0`
+- recomplie nginx this time including the [xslt module](http://nginx.org/en/docs/http/ngx_http_xslt_module.html):
+
+```
+sudo apt-get install libxslt-dev
+./configure --with-http_ssl_module --add-module=../nginx-rtmp-module --with-http_xslt_module
+make
+sudo make install
+```
+
+__NOPE ! couldnt get this working -> for some reason nginx is not logging access logs anymore... it works on a different, new streaming server but not on this one. wtf __
+
+next is to update the nginx config file ( `nano /usr/local/nginx/conf/nginx.conf` ) adding these inside the server block:
+
+```
+location /stat {
+    rtmp_stat all;
+    allow 127.0.0.1;
+}
+
+location /nclients {
+    proxy_pass http://127.0.0.1/stat;
+    xslt_stylesheet /nginx/nclients.xsl app='$arg_app' name='$arg_name';
+    add_header Refresh "3; $request_uri";
+}
+```
+
+and to create a new file `nano /nginx/nclients.xsl` at:
+
+```
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+<xsl:output method="html"/>
+
+<xsl:param name="app"/>
+<xsl:param name="name"/>
+
+<xsl:template match="/">
+    <xsl:value-of select="count(//application[name=$app]/live/stream[name=$name]/client[not(publishing) and flashver])"/>
+</xsl:template>
+
+</xsl:stylesheet>
+```
+
+and finally (this is important !) test ( `/usr/local/nginx/sbin/nginx -t` ) and reload the new conf : `/usr/local/nginx/sbin/nginx -s reload`

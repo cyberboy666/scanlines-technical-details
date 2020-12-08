@@ -278,3 +278,19 @@ due to security around impersonating users, it is not possible to create an acco
 - `\d` to see tables , `\d actor` to see colums for the actor table
 - `SELECT "preferredUsername" FROM actor;` to see all the actor names
 - `DELETE FROM actor WHERE "preferredUsername" = 'cyberboy666';` to delete user with name cyberboy666
+
+# ssl cert autorenew
+
+the ssl cert did not autorenew for our peertube instance. i assumed that it would (even though ignoring emails warning this hhaha)
+
+taking a look into `nano /etc/cron.d/certbot` :
+
+![image](https://user-images.githubusercontent.com/12017938/101554284-9a455c00-39b6-11eb-801d-a93dd6b1f780.png)
+
+there is a cron job setup to renew the cert. i dont know why this didnt work. have tried replacing it with the simpler cron renew command:
+
+```
+0 */12 * * * root certbot -q renew --nginx
+```
+
+lets see if in 90 days it actually renews this time

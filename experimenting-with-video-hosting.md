@@ -262,7 +262,7 @@ i uploaded a 1hour long 500mb 720 video as a test. it worked well. transcoding t
 
 using hls is meant to make playback smoother, and loading faster , ~~but when trying this there were a few problems. there is no quality options:~~
 
-~~this problem seems to be resolved when updating the version. hls videos seems to work fine for me now.~~ still problems with hls on desktop
+~~this problem seems to be resolved when updating the version. hls videos seems to work fine for me now.~~ ~~still problems with hls on desktop~~ -> seems to be working now on later peertube versions
 
 # single sign-on:
 
@@ -294,3 +294,19 @@ there is a cron job setup to renew the cert. i dont know why this didnt work. ha
 ```
 
 lets see if in 90 days it actually renews this time
+
+# allowing larger file sizes
+
+by default the max file size allowed to be uploaded to peertube is 8gbs. this is set in the nginx config. to increase this we can open up the config:
+
+```
+nano /etc/nginx/sites-available/peertube
+```
+
+some lines down under `location / {` you should see this being set with the line:
+
+```
+client_max_body_size 8G;
+```
+
+this can be updated, saved and nginx restarted ( `systemctl restart nginx` )

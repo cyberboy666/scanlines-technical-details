@@ -34,6 +34,7 @@ curl -sL https://deb.nodesource.com/setup_10.x | bash -
 sudo apt install -y nodejs
 curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+# if this fails you may need to run: `curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -`
 sudo apt-get update && sudo apt-get install -y yarn
 yarn --version
 ```
@@ -57,6 +58,7 @@ sudo systemctl enable postgresql
 ```
 sudo useradd -m -d /var/www/peertube -s /bin/bash -p peertube peertube
 sudo passwd peertube
+# the following 4 commands may say permission denied - this can be ignored
 sudo -u postgres createuser -P peertube
 sudo -u postgres createdb -O peertube -E UTF8 -T template0 peertube_prod
 
@@ -104,6 +106,12 @@ it is worth taking a look inside the nginx config file also - just to have some 
 
 ```
 sed -i "s/peertube.example.com/"$DOMAIN_NAME"/g" /etc/nginx/sites-available/peertube
+```
+
+NOTE: for the newer versions of peertube this file has changed slightly - you may now need to run this instead:
+```
+sudo sed -i 's/${WEBSERVER_HOST}/[peertube-domain]/g' /etc/nginx/sites-available/peertube
+sudo sed -i 's/${PEERTUBE_HOST}/127.0.0.1:9000/g' /etc/nginx/sites-available/peertube
 ```
 
 - next we will install the letsencrypt certs for https:

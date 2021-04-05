@@ -318,3 +318,18 @@ client_max_body_size 8G;
 ```
 
 this can be updated, saved and nginx restarted ( `systemctl restart nginx` )
+
+# resetting the wasabi mounts on reboot of droplet
+
+i noticed that after a reboot of the droplet the mount points created s3fs need to be recreated. the easiest way to ensure this happens is by adding these commands to end of the crontab: `crontab -e`
+
+```
+@restart s3fs scanlines-videos /var/www/peertube/storage/videos -o passwd_file=/etc/passwd-s3fs -o url=https://s3.eu-central-1.wasabisys.com -o allow_other -o use_path_request_style -o uid=1000 -o gid=1000
+
+@restart s3fs scanlines-redundancy /var/www/peertube/storage/redundancy -o passwd_file=/etc/passwd-s3fs -o url=https://s3.eu-central-1.wasabisys.com -o allow_other -o use_path_request_style -o uid=1000 -o gid=1000
+
+@restart s3fs scanlines-streaming-playlists /var/www/peertube/storage/streaming-playlists -o passwd_file=/etc/passwd-s3fs -o url=https://s3.eu-central-1.wasabisys.com -o allow_other -o use_path_request_style -o uid=1000 -o gid=1000
+```
+
+it still pays to check using `mount` that they are created after a reset - as this may fail if the folders are out of sync (i could fix this by moving everything out of the problem folder to a backup , then creating the link, then moving everything back in - which also uploads everything missing)
+

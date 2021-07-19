@@ -287,6 +287,25 @@ due to security around impersonating users, it is not possible to create an acco
 - `SELECT "preferredUsername" FROM actor;` to see all the actor names
 - `DELETE FROM actor WHERE "preferredUsername" = 'cyberboy666';` to delete user with name cyberboy666
 
+## similar but for updating email address
+
+- connect to the _peertube_prod_ db as above
+- `UPDATE "user" SET email = '<new email>' WHERE "username" = '<user>';`
+  
+## similar but for updating username (note this could break things related to federation)
+
+  - connect to the _peertube_prod_ db as above
+
+```
+UPDATE "account" SET "name" = '<new-name>' WHERE "name" = '<old-name>';
+
+UPDATE "actor" SET "preferredUsername" = '<new-name>', "url"='https://videos.scanlines.xyz/accounts/<new-name>', "inboxUrl"='https://videos.scanlines.xyz/accounts/<new-name>/inbox', "outboxUrl"='https://videos.scanlines.xyz/accounts/<new-name>/outbox', "followersUrl"='https://videos.scanlines.xyz/accounts/<new-name>/followers', "followingUrl"='https://videos.scanlines.xyz/accounts/<new-name>/following' WHERE "preferredUsername" = '<old-name>';
+
+UPDATE "user" SET username = '<new-name>' WHERE "username" = '<old-name>';
+```
+
+(updating account table - first line above - might not be needed as this is the display name which user can set themself)
+
 # ssl cert autorenew
 
 the ssl cert did not autorenew for our peertube instance. i assumed that it would (even though ignoring emails warning this hhaha)

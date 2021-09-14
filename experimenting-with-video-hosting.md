@@ -352,3 +352,13 @@ i noticed that after a reboot of the droplet the mount points created s3fs need 
 
 it still pays to check using `mount` that they are created after a reset - as this may fail if the folders are out of sync (i could fix this by moving everything out of the problem folder to a backup , then creating the link, then moving everything back in - which also uploads everything missing)
 
+## peertube 3.1.0 needs ffmpeg > 4.1
+
+https://framacolibri.org/t/hls-with-p2p-not-working-mediaerror-fragparsingerror/11771
+
+i updated by 
+```
+ sudo add-apt-repository ppa:jonathonf/ffmpeg-4
+ sudo apt update
+ sudo apt install ffmpeg
+```

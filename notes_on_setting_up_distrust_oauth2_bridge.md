@@ -33,6 +33,7 @@ add nginx to the firewall and enable it
 
 ```
 sudo ufw allow 'Nginx Full'
+sudo ufw allow ssh
 sudo ufw enable
 sudo ufw status
 ```
@@ -65,13 +66,17 @@ make a link of this to the _sites_enabled_ then test your config:
 sudo ln -s /etc/nginx/sites-available/<your-domain> /etc/nginx/sites-enabled/
 sudo nginx -t
 ```
-if there are no problems the output will read:
-```
-nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
-nginx: configuration file /etc/nginx/nginx.conf test is successful
-```
+if there are no problems the output will read : 
+> `nginx: the configuration file /etc/nginx/nginx.conf syntax is ok`
+> 
+> `nginx: configuration file /etc/nginx/nginx.conf test is successful`
 
-that means we can restart nginx: `sudo systemctl restart nginx` and test it is working by putting your domain name into a web-browser (http):
+that means we can restart nginx:
+
+```
+sudo systemctl restart nginx
+``` 
+and test it is working by putting your domain name into a web-browser (http):
 
 ![image](https://user-images.githubusercontent.com/12017938/195729476-e7bbe91c-21a3-4baa-86b5-67af9b924744.png)
 
@@ -116,7 +121,7 @@ for the first part of the `distrust.yml` we need to enter the discourse-server a
 
 ![image](https://user-images.githubusercontent.com/12017938/195721425-3ac94a20-e9bd-4507-9412-43dc64e64621.png)
 
-put this into your distrust config with `nano distrust.yaml` (use ctrl-x to save and quit nano)
+put this into your distrust config with `nano distrust.yml` (use ctrl-x to save and quit nano)
 
 next we need to create oidc secret and private key to put into _distrust.yaml_ - the secret needs to be exactly 32bytes. for this i used python secrets module to generate (and check byte length):
 ```
